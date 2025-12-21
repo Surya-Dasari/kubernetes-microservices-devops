@@ -42,9 +42,20 @@ pipeline {
         }
 
         stage('Trivy Scan') {
-            steps {
-                dir("${SERVICE_DIR}") {
-                    sh 'trivy fs --exit-code 0 --severity HIGH,CRITICAL .'
+    steps {
+        dir("${SERVICE_DIR}") {
+            sh '''
+              docker run --rm \
+                -v $(pwd):/project \
+                aquasec/trivy:latest fs \
+                --exit-code 0 \
+                --severity HIGH,CRITICAL \
+                /project
+            '''
+        }
+    }
+}
+
                 }
             }
         }
