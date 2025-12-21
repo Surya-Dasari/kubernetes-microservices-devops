@@ -7,8 +7,8 @@ pipeline {
     }
 
     environment {
-        SERVICE_NAME = 'user-service'
-        IMAGE_NAME = 'user-service'
+        SERVICE_DIR = 'services/user-service'
+        IMAGE_NAME  = 'user-service'
     }
 
     stages {
@@ -21,35 +21,39 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                sh 'mvn clean verify'
+                dir("${SERVICE_DIR}") {
+                    sh 'mvn clean verify'
+                }
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonarqube-local') {
-                    sh '''
-                      mvn sonar:sonar \
-                      -Dsonar.projectKey=user-service \
-                      -Dsonar.projectName=user-service
-                    '''
+                dir("${SERVICE_DIR}") {
+                    withSonarQubeEnv('sonarqube-local') {
+                        sh '''
+                          mvn sonar:sonar \
+                          -Dsonar.projectKey=user-service \
+                          -Dsonar.projectName=user-service
+                        '''
+                    }
                 }
             }
         }
 
         stage('Trivy Scan') {
             steps {
-                sh '''
-                  trivy fs --exit-code 0 --severity HIGH,CRITICAL .
-                '''
+                dir("${SERVICE_DIR}") {
+                    sh 'trivy fs --exit-code 0 --severity HIGH,CRITICAL .'
+                }
             }
         }
 
         stage('Docker Build') {
             steps {
-                sh '''
-                  docker build -t ${IMAGE_NAME}:latest .
-                '''
+                dir("${SERVICE_DIR}") {
+                    sh 'docker build -t ${IMAGE_NAME}:latest .'
+                }
             }
         }
     }
