@@ -29,43 +29,4 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                dir("${SERVICE_DIR}") {
-                    withSonarQubeEnv('sonarqube-local') {
-                        sh '''
-                          mvn sonar:sonar \
-                          -Dsonar.projectKey=user-service \
-                          -Dsonar.projectName=user-service
-                        '''
-                    }
-                }
-            }
-        }
-
-        stage('Trivy Scan') {
-    steps {
-        dir("${SERVICE_DIR}") {
-            sh '''
-              docker run --rm \
-                -v $(pwd):/project \
-                aquasec/trivy:latest fs \
-                --exit-code 0 \
-                --severity HIGH,CRITICAL \
-                /project
-            '''
-        }
-    }
-}
-
-                }
-            }
-        }
-
-        stage('Docker Build') {
-            steps {
-                dir("${SERVICE_DIR}") {
-                    sh 'docker build -t ${IMAGE_NAME}:latest .'
-                }
-            }
-        }
-    }
-}
+                dir("${SERVICE_DIR}_
