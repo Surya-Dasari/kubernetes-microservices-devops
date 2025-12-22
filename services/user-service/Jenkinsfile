@@ -54,7 +54,7 @@ pipeline {
 
         stage('Docker Build & Push') {
             environment {
-                IMAGE_NAME = "dockerhub_username/user-service"
+                IMAGE_NAME = "suryadasari31/user-service"
                 IMAGE_TAG  = "${BUILD_NUMBER}"
             }
             steps {
