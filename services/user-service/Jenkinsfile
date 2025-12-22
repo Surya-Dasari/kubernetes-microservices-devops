@@ -1,41 +1,55 @@
 pipeline {
     agent any
 
+    tools {
+        maven 'maven'
+        jdk 'jdk17'
+    }
+
     stages {
+
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Build & Deploy SNAPSHOT') {
+        stage('Build & Test') {
             steps {
                 dir('services/user-service') {
-                    sh 'mvn clean deploy'
+                    sh 'mvn clean verify'
                 }
             }
-     
         }
 
         stage('SonarQube Analysis') {
-    tools {
-        maven 'maven'
-        jdk 'jdk17'
-    }
-    steps {
-        dir('services/user-service') {
-            withSonarQubeEnv('sonarqube-local') {
-                sh '''
-                  mvn sonar:sonar \
-                  -Dsonar.projectKey=user-service \
-                  -Dsonar.projectName=user-service
-                '''
+            steps {
+                dir('services/user-service') {
+                    withSonarQubeEnv('sonarqube-local') {
+                        sh '''
+                          mvn sonar:sonar \
+                          -Dsonar.projectKey=user-service \
+                          -Dsonar.projectName=user-service
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
+        stage('Deploy SNAPSHOT to Nexus') {
+            steps {
+                dir('services/user-service') {
+                    sh 'mvn deploy'
+                }
             }
         }
     }
 }
-
-    }
-
-}
-
