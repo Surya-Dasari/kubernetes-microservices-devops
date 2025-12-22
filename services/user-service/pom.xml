@@ -20,12 +20,13 @@
 	<developers>
 		<developer/>
 	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+	  <scm>
+    <connection>scm:git:https://github.com/Surya-Dasari/kubernetes-microservices-devops.git</connection>
+    <developerConnection>scm:git:https://github.com/Surya-Dasari/kubernetes-microservices-devops.git</developerConnection>
+    <url>https://github.com/Surya-Dasari/kubernetes-microservices-devops</url>
+    <tag>HEAD</tag>
+</scm>
+
 	<properties>
 		<java.version>17</java.version>
 	</properties>
