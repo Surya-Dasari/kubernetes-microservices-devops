@@ -50,7 +50,25 @@ pipeline {
                 dir('services/user-service') {
                     sh 'mvn deploy'
                 }
+            }stage('Docker Build & Push') {
+    environment {
+        IMAGE_NAME = "dockerhub_username/user-service"
+        IMAGE_TAG = "${BUILD_NUMBER}"
+    }
+    steps {
+        dir('services/user-service') {
+            script {
+                docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-creds') {
+                    def app = docker.build("${IMAGE_NAME}:${IMAGE_TAG}")
+                    app.push()
+                    app.push('latest')
+                }
             }
+        }
+    }
+}
+
+            
         }
     }
 }
