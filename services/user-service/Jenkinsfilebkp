@@ -1,0 +1,56 @@
+pipeline {
+    agent any
+
+    tools {
+        jdk 'jdk-17'
+        maven 'maven-3'
+    }
+
+    environment {
+        SERVICE_DIR = 'services/user-service'
+        IMAGE_NAME  = 'user-service'
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build & Test') {
+            steps {
+                dir("${SERVICE_DIR}") {
+                    sh 'mvn clean verify'
+                }
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                dir("${SERVICE_DIR}") {
+                    withSonarQubeEnv('sonarqube-local') {
+                        sh 'mvn sonar:sonar -Dsonar.projectKey=user-service -Dsonar.projectName=user-service'
+                    }
+                }
+            }
+        }
+
+        stage('Trivy Scan') {
+            steps {
+                dir("${SERVICE_DIR}") {
+                    sh 'docker run --rm -v $(pwd):/project aquasec/trivy:latest fs --exit-code 0 --severity HIGH,CRITICAL /project'
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir("${SERVICE_DIR}") {
+                    sh 'docker build -t ${IMAGE_NAME}:latest .'
+                }
+            }
+        }
+    }
+}
