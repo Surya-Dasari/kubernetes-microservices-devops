@@ -15,8 +15,8 @@ spec:
     spec:
       containers:
         - name: user-service
-          image: user-service:1.1
-          imagePullPolicy: IfNotPresent
+          image: suryadasari31/user-service:<tag>
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           livenessProbe:
