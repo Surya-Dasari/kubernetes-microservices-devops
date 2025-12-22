@@ -14,7 +14,28 @@ pipeline {
                     sh 'mvn clean deploy'
                 }
             }
+     
+        }
+
+        stage('SonarQube Analysis') {
+    tools {
+        maven 'maven'
+        jdk 'jdk17'
+    }
+    steps {
+        dir('services/user-service') {
+            withSonarQubeEnv('sonarqube-local') {
+                sh '''
+                  mvn sonar:sonar \
+                  -Dsonar.projectKey=user-service \
+                  -Dsonar.projectName=user-service
+                '''
+            }
         }
     }
+}
+
+    }
+
 }
 
