@@ -7,8 +7,8 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "suryadasari31/user-service"
-        IMAGE_TAG  = "${BUILD_NUMBER}"
+        IMAGE_NAME    = "suryadasari31/user-service"
+        IMAGE_TAG     = "${BUILD_NUMBER}"
         K8S_NAMESPACE = "dev"
     }
 
@@ -78,6 +78,20 @@ pipeline {
         stage('Deploy to Kubernetes (DEV)') {
             steps {
                 sh '''
-                  kubectl apply -n ${K8S_NAMESPACE} -f k8s/user-service/deployment.yaml
-                  kubectl apply -n ${K8S_NAMESPACE} -f k8s/user-service/service.yaml
-                  kub
+                  kubectl apply -n dev -f k8s/user-service/deployment.yaml
+                  kubectl apply -n dev -f k8s/user-service/service.yaml
+                  kubectl rollout status deployment/user-service -n dev
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline completed successfully'
+        }
+        failure {
+            echo 'Pipeline failed. Check logs.'
+        }
+    }
+}
