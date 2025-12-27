@@ -75,16 +75,16 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes (DEV)') {
+       stage('Deploy to Kubernetes (DEV)') {
     environment {
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
     steps {
         sh """
           sed -i 's|IMAGE_TAG|${IMAGE_TAG}|g' k8s/user-service/deployment.yaml
-          kubectl apply -n dev -f k8s/user-service/deployment.yaml
-          kubectl apply -n dev -f k8s/user-service/service.yaml
-          kubectl rollout status deployment/user-service -n dev
+          /usr/local/bin/kubectl apply -n dev -f k8s/user-service/deployment.yaml
+          /usr/local/bin/kubectl apply -n dev -f k8s/user-service/service.yaml
+          /usr/local/bin/kubectl rollout status deployment/user-service -n dev
         """
     }
 }
