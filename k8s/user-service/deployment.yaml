@@ -14,10 +14,9 @@ spec:
         app: user-service
     spec:
       containers:
-       - name: user-service
-         image: suryadasari31/user-service:IMAGE_TAG
-         imagePullPolicy: Always
-
+        - name: user-service
+          image: suryadasari31/user-service:IMAGE_TAG
+          imagePullPolicy: Always
           ports:
             - containerPort: 8080
           livenessProbe:
