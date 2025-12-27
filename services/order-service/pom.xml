@@ -48,7 +48,16 @@
 
     <!-- Nexus -->
     <distributionManagement>
-        <snapshotRepository>
-            <id>nexus-snapshots</id>
-            <url>http://localhost:8082/repository/k8s-microservices-snapshots/</url>
-        </snapsho
+
+    <snapshotRepository>
+        <id>nexus-snapshots</id>
+        <url>http://localhost:8082/repository/k8s-microservices-snapshots/</url>
+    </snapshotRepository>
+
+    <repository>
+        <id>nexus-releases</id>
+        <url>http://localhost:8082/repository/k8s-microservices-releases/</url>
+    </repository>
+
+</distributionManagement>
+
