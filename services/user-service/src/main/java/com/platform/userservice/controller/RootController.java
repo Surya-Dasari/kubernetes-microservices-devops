@@ -4,10 +4,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class UserController {
+public class RootController {
 
-    @GetMapping("/users")
-    public String users() {
-        return "users endpoint";
+    @GetMapping("/")
+    public String home() {
+        return "user-service is up";
     }
 }
