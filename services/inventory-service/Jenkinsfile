@@ -7,7 +7,7 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = 'suryadasari31/product-service'
+        IMAGE_NAME = 'suryadasari31/inventory-service'
         IMAGE_TAG  = "${BUILD_NUMBER}"
     }
 
