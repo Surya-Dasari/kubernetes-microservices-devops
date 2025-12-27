@@ -75,13 +75,15 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes (DEV)') {
-            steps {
-                sh '''
-                  kubectl apply -n dev -f k8s/user-service/deployment.yaml
-                  kubectl apply -n dev -f k8s/user-service/service.yaml
+    steps {
+        sh '''
+          /usr/local/bin/kubectl apply -n dev -f k8s/user-service/deployment.yaml
+          /usr/local/bin/kubectl apply -n dev -f k8s/user-service/service.yaml
+          /usr/local/bin/kubectl rollout status deployment/user-service -n dev
+        '''
+    }
+}
 
-                  kubectl rollout status deployment/user-service -n dev
-                '''
             }
         }
     }
