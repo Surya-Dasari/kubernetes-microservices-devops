@@ -6,6 +6,11 @@ pipeline {
         jdk 'jdk-17'
     }
 
+    environment {
+        IMAGE_NAME = "suryadasari31/user-service"
+        IMAGE_TAG  = "${BUILD_NUMBER}"
+    }
+
     stages {
 
         stage('Checkout') {
@@ -53,10 +58,6 @@ pipeline {
         }
 
         stage('Docker Build & Push') {
-            environment {
-                IMAGE_NAME = "suryadasari31/user-service"
-                IMAGE_TAG  = "${BUILD_NUMBER}"
-            }
             steps {
                 dir('services/user-service') {
                     script {
@@ -73,5 +74,24 @@ pipeline {
             }
         }
 
+        stage('Deploy to Kubernetes (DEV)') {
+            steps {
+                sh '''
+                  kubectl apply -n dev -f k8s/user-service/deployment.yaml
+                  kubectl apply -n dev -f k8s/user-service/service.yaml
+
+                  kubectl rollout status deployment/user-service -n dev
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline completed successfully. Application deployed to DEV."
+        }
+        failure {
+            echo "Pipeline failed. Check logs for details."
+        }
     }
 }
