@@ -22,6 +22,22 @@ pipeline {
                 }
             }
         }
+
+
+        stage('SonarQube Analysis') {
+    steps {
+        dir('services/product-service') {
+            withSonarQubeEnv('sonarqube-local') {
+                sh '''
+                  mvn sonar:sonar \
+                  -Dsonar.projectKey=product-service \
+                  -Dsonar.projectName=product-service
+                '''
+            }
+        }
+    }
+}
+
     }
 
 
