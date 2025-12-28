@@ -18,9 +18,4 @@ spec:
           image: inventory-service:1.0
           ports:
             - containerPort: 8080
-          livenessProbe:
-            httpGet:
-              path: /actuator/health
-              port: 8080
-            initialDelaySeconds: 20
-            periodSeconds: 10
+          
